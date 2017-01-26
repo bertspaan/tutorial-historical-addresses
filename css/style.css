@@ -6,6 +6,26 @@
   max-width: 1000px;
 }
 
+h1, h2 {
+  text-align: center;
+}
+
+h1 {
+  margin: .25em 0;
+}
+
+h2 {
+  margin: .125em 0;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+.center {
+  text-align: center;
+}
+
 a, a:visited {
   color: black;
   text-decoration: none;
@@ -22,6 +42,9 @@ body, input, select {
   box-sizing: border-box;
   padding: .3em .5em;
   margin-bottom: 1em;
+}
+
+#search, #submit, #list, #map-container {
   border-radius: 5px;
   border-style: solid;
   border-width: 2px;
@@ -35,11 +58,12 @@ body, input, select {
 #results {
   width: 100%;
   display: flex;
-  height: 500px;
+  height: 450px;
 }
 
 #list {
   width: 500px;
+  min-height: 150px;
   overflow-y: auto;
   list-style-type: none;
   margin-right: 1em;
@@ -78,6 +102,54 @@ body, input, select {
   opacity: .5;
 }
 
+#map-container {
+  position: relative;
+  width: 100%;
+}
+
 #map {
   width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+#slider-container {
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.5);
+  border-style: solid;
+  width: 50%;
+  left: calc(50% - 25%);
+  z-index: 9999;
+  position: absolute;
+  bottom: 20px;
+  margin: 0 auto;
+  background-color: white;
+  padding: .5em 1em;
+  border-radius: 20px;
+}
+
+#slider-container label {
+  display: flex;
+}
+
+#slider-container label span {
+  margin-right: .5em;
+}
+
+
+#slider {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 800px) {
+  #results {
+    flex-direction: column;
+  }
+
+  #list {
+    width: 100%;
+    margin-bottom: 1em;
+  }
 }

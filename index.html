@@ -11,14 +11,37 @@
     <link rel="stylesheet" href="css/leaflet.css" />
   </head>
   <body>
-    <h1>Find Historical Addresses</h1>
-    <h2>A tutorial using <a href="http://spacetime.nypl.org/">NYC Space/Time Directory</a> data</h2>
-    <input id="search" tabindex="1" placeholder="Search historical address" autofocus />
-    <div id="results">
-      <ol id="list" tabindex="0">
-      </ol>
-      <div id="map"></div>
+    <header>
+      <h1>Search Historical Addresses</h1>
+      <h2>A tutorial about using &amp; visualizing <a href="http://spacetime.nypl.org/">NYC Space/Time Directory</a> data</h2>
+      <p>
+        This web page is the final result of a tutorial presented in the <a href="https://www.meetup.com/historical-data-and-maps-at-nypl/events/236221289/)">second meetup</a> of <a href="http://spacetime.nypl.org">NYC Space/Time Directory</a>'s <a href="https://www.meetup.com/historical-data-and-maps-at-nypl/">meetup series</a>.
+
+        In this tutorial, you will learn how to use and visualize data from the <a href="http://spacetime.nypl.org/">NYC Space/Time Directory</a>, and from <a href="http://buildinginspector.nypl.org/">Building Inspector</a> and <a href="http://maps.nypl.org/warper">Map Warper</a>.
+      </p>
+      <p class="center"><strong>
+        See <a href="https://github.com/nypl-spacetime/tutorial-historical-addresses">GitHub</a> for the complete tutorial.</strong>
+      </p>
+    </header>
+    <article>
+      <input id="search" tabindex="1" placeholder="Search historical address in Building Inspector data" autofocus />
+      <div id="results">
+        <ol id="list" tabindex="0">
+        </ol>
+        <div id="map-container" class="hidden">
+          <div id="map">
+          </div>
+          <div id="slider-container">
+            <label>
+              <span>Opacity:</span>
+              <input id="slider" type="range" min="0" max="100" step="1" value="100" />
+            </label>
+        </div>
     </div>
+      </div>
+    </article>
+    <footer>
+    </footer>
     <script>
       var addresses
       var streets
@@ -104,6 +127,10 @@
           }
         })
 
+      d3.select('#slider').on('input', function () {
+        tileLayer.setOpacity(this.value / 100)
+      })
+
       d3.select('#search')
         .on('input', function () {
           if (!addresses || !streets) {
@@ -121,8 +148,6 @@
             .data(results, function (d) {
               return d.id
             })
-
-
 
           var item = list
             .enter()
@@ -193,10 +218,11 @@
         maxZoom: 20
       })
 
-      var baseMapTileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+      var baseMapTileUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       var baseLayer = L.tileLayer(baseMapTileUrl, {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        maxZoom: 20
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 20,
+        maxNativeZoom: 19
       }).addTo(map)
 
       var tileLayer = L.tileLayer('', {
