@@ -66,11 +66,14 @@
         indexed = true
       })
 
-      function selectItem (item) {
-        item.focus()
+      function selectItem (item, focus) {
+        if (focus) {
+          item.focus()
+        }
 
-        d3.selectAll('#list li')
+        d3.selectAll('#list .item')
           .classed('selected', false)
+
         d3.select(item)
           .classed('selected', true)
           .each(function (address) {
@@ -92,9 +95,9 @@
             var selected = d3.select(this).select('.selected').node()
 
             if (move > 0 && selected.nextElementSibling) {
-              selectItem(selected.nextElementSibling)
+              selectItem(selected.nextElementSibling, true)
             } else if (move < 0 && selected.previousElementSibling) {
-              selectItem(selected.previousElementSibling)
+              selectItem(selected.previousElementSibling, true)
             }
 
             d3.event.preventDefault()
@@ -119,14 +122,14 @@
               return d.id
             })
 
+
+
           var item = list
             .enter()
             .append('li')
             .attr('tabindex', 0)
             .classed('item', true)
-            .classed('selected', function (address, index) {
-              return index === 0
-            })
+            .classed('selected', false)
             .on('click', function () {
               selectItem(this)
             })
@@ -146,7 +149,7 @@
           list.exit().remove()
 
           if (results.length) {
-            selectAddress(results[0])
+            selectItem(d3.select('#list').select('.item').node(), false)
           }
         })
 
@@ -168,7 +171,9 @@
           features: [
             {
               type: 'Feature',
-              properties: {},
+              properties: {
+                address: selectedAddress.address
+              },
               geometry: selectedAddress.geometry
             },
             {
@@ -204,7 +209,10 @@
           return L.circleMarker(latlng, styles.address)
         },
         onEachFeature: function (feature, layer) {
-          // bindPopup(layer, feature)
+          var text = feature.properties.name || feature.properties.address
+          if (text) {
+            layer.bindPopup(text)
+          }
         }
       }).addTo(map)
 
