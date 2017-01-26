@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Historical Addresses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/lunr.min.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+  </head>
+  <body>
+    <h1>Find Historical Addresses</h1>
+    <h2>A tutorial using <a href="http://spacetime.nypl.org/">NYC Space/Time Directory</a> data</h2>
+    <input id="search" tabindex="1" placeholder="Search historical address" autofocus />
+    <div id="results">
+      <ol id="list">
+      </ol>
+      <div id="map"></div>
+    </div>
+    <script>
+      var addresses
+      var streets
+
+      var newTiles = false
+      var selectedAddress = {}
+
+      var idx = lunr(function () {
+        this.field('address')
+        this.ref('id')
+      })
+      var indexed = false
+
+      var styles = {
+        address: {
+          radius: 5,
+          fillColor: '#ffd400',
+          color: '#000',
+          weight: 1,
+          fillOpacity: 0.8
+        },
+        street: {
+          color: '#0fa',
+          weight: 3
+        }
+      }
+
+      d3.json('data/streets.json', function (err, json) {
+        streets = json
+      })
+
+      d3.json('data/addresses.json', function (err, json) {
+        if (err) {
+          console.error(err)
+          return
+        }
+
+        addresses = json
+
+        addresses.forEach(function (address) {
+          idx.add(address)
+        })
+
+        indexed = true
+      })
+
+      d3.select('#search')
+        .on('input', function () {
+          if (!addresses || !streets) {
+            console.error('Not loaded!')
+            return
+          }
+
+          var results = idx.search(this.value)
+            .slice(0, 25)
+            .map(function (result) {
+              return addresses[result.ref]
+            })
+
+          var li = d3.select('#list').selectAll('li')
+            .data(results, function (d) {
+              return d.id
+            })
+
+          var item = li
+            .enter()
+            .append('li')
+            .attr('class', function (d, i) {
+              return i === 0 ? 'selected' : ''
+            })
+            .on('click', function (d) {
+              d3.selectAll('#list li')
+                .classed('selected', false)
+              d3.select(this)
+                .classed('selected', true)
+
+              selectAddress(d)
+            })
+
+          item.append('span')
+            .attr('class', 'address')
+            .html(function (d) {
+              return d.address
+            })
+
+          item.append('span')
+            .attr('class', 'year')
+            .html(function (d) {
+              return d.year
+            })
+
+          li.exit().remove()
+
+          if (results.length) {
+            selectAddress(results[0])
+          }
+        })
+
+      function selectAddress (newAddress) {
+        if (selectedAddress.mapId !== newAddress.mapId) {
+          newTiles = true
+          tileLayer.setUrl('')
+        }
+
+        selectedAddress = newAddress
+
+        var coordinates = selectedAddress.geometry.coordinates
+        var street = streets[selectedAddress.streetId]
+
+        map.flyTo([coordinates[1], coordinates[0]], 19)
+        geojsonLayer.clearLayers()
+        geojsonLayer.addData({
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: {},
+              geometry: selectedAddress.geometry
+            },
+            {
+              type: 'Feature',
+              properties: {
+                name: street.name
+              },
+              geometry: street.geometry
+            }
+          ]
+        })
+      }
+
+      var map = L.map('map', {
+        center: [40.8, -73.96],
+        zoom: 14,
+        maxZoom: 20
+      })
+
+      var baseMapTileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+      var baseLayer = L.tileLayer(baseMapTileUrl, {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 20
+      }).addTo(map)
+
+      var tileLayer = L.tileLayer('', {
+        maxZoom: 20
+      }).addTo(map)
+
+      var geojsonLayer = new L.geoJson(null, {
+        style: styles.street,
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, styles.address)
+        },
+        onEachFeature: function (feature, layer) {
+          // bindPopup(layer, feature)
+        }
+      }).addTo(map)
+
+      map.on('moveend', function () {
+        if (newTiles) {
+          var tileUrl = 'http://maps.nypl.org/warper/maps/tile/' + selectedAddress.mapId + '/{z}/{x}/{y}.png'
+          tileLayer.setUrl(tileUrl)
+        }
+
+        newTiles = false
+      })
+    </script>
+  </body>
+</html>
+
