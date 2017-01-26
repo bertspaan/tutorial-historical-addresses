@@ -128,7 +128,7 @@
         var coordinates = selectedAddress.geometry.coordinates
         var street = streets[selectedAddress.streetId]
 
-        map.flyTo([coordinates[1], coordinates[0]], 19)
+        map.panTo([coordinates[1], coordinates[0]], 19)
         geojsonLayer.clearLayers()
         geojsonLayer.addData({
           type: 'FeatureCollection',
