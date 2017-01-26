@@ -33,7 +33,7 @@ H(request(s3Url(datasets.addresses)))
   .map((object) => ({
     id: index++,
     address: object.name,
-    streetId: object.streetId,
+    streetId: object.data.streetId,
     year: object.validSince,
     geometry: object.geometry,
     mapId: object.data.mapId
