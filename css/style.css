@@ -6,12 +6,13 @@
   max-width: 1000px;
 }
 
-body, input {
+body, input, select {
   font-size: 16px;
   font-family: monospace;
 }
 
-#search, #submit {
+#search, #submit, #list {
+  box-sizing: border-box;
   padding: .3em .5em;
   margin-bottom: 1em;
   border-radius: 5px;
@@ -34,41 +35,40 @@ body, input {
   width: 500px;
   overflow-y: auto;
   list-style-type: none;
-  margin: 0;
+  margin-right: 1em;
+  margin-bottom: 0;
+  margin-top: 0;
   padding: 0;
 }
 
-#list li {
+#list .item {
   display: flex;
   justify-content: space-between;
   padding: .2em .5em;
   cursor: pointer;
 }
 
-#list li:hover {
+#list .item:hover {
+  color: black;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-#list li.selected {
-  background-color: #ffd400;
+#list .item.selected {
+  background: linear-gradient(#ffd400, #ffd400);
 }
 
-#list li .address {
+#list .item:focus {
+  color: black;
+}
+
+#list .item .address {
   text-align: right;
   width: 100%;
   margin-right: 1em;
 }
 
-#list li .year {
+#list .item .year {
   opacity: .5;
-}
-
-#list li .year:before {
-  content: '(';
-}
-
-#list li .year:after {
-  content: ')';
 }
 
 #map {

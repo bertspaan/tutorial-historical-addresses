@@ -1,0 +1,16 @@
+{
+  "name": "spacetime-tutorial-historical-addresses",
+  "version": "1.0.0",
+  "description": "Tutorial for the second meetup of NYC Space/Time Directory's meetup series",
+  "main": "data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bert Spaan",
+  "license": "MIT",
+  "dependencies": {
+    "JSONStream": "^1.3.0",
+    "highland": "^2.10.1",
+    "request": "^2.79.0"
+  }
+}

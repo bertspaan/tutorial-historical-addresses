@@ -15,7 +15,7 @@
     <h2>A tutorial using <a href="http://spacetime.nypl.org/">NYC Space/Time Directory</a> data</h2>
     <input id="search" tabindex="1" placeholder="Search historical address" autofocus />
     <div id="results">
-      <ol id="list">
+      <ol id="list" tabindex="0">
       </ol>
       <div id="map"></div>
     </div>
@@ -41,8 +41,9 @@
           fillOpacity: 0.8
         },
         street: {
-          color: '#0fa',
-          weight: 3
+          color: '#ffd400',
+          opacity: 0.7,
+          weight: 6
         }
       }
 
@@ -65,6 +66,41 @@
         indexed = true
       })
 
+      function selectItem (item) {
+        item.focus()
+
+        d3.selectAll('#list li')
+          .classed('selected', false)
+        d3.select(item)
+          .classed('selected', true)
+          .each(function (address) {
+            selectAddress(address)
+          })
+      }
+
+      d3.select('#list')
+        .on('keydown', function (event) {
+          var move = 0
+          var key = d3.event.key
+          if (key === 'ArrowUp') {
+            move = -1
+          } else if (key === 'ArrowDown') {
+            move = 1
+          }
+
+          if (move) {
+            var selected = d3.select(this).select('.selected').node()
+
+            if (move > 0 && selected.nextElementSibling) {
+              selectItem(selected.nextElementSibling)
+            } else if (move < 0 && selected.previousElementSibling) {
+              selectItem(selected.previousElementSibling)
+            }
+
+            d3.event.preventDefault()
+          }
+        })
+
       d3.select('#search')
         .on('input', function () {
           if (!addresses || !streets) {
@@ -73,44 +109,41 @@
           }
 
           var results = idx.search(this.value)
-            .slice(0, 25)
+            .slice(0, 75)
             .map(function (result) {
               return addresses[result.ref]
             })
 
-          var li = d3.select('#list').selectAll('li')
+          var list = d3.select('#list').selectAll('li')
             .data(results, function (d) {
               return d.id
             })
 
-          var item = li
+          var item = list
             .enter()
             .append('li')
-            .attr('class', function (d, i) {
-              return i === 0 ? 'selected' : ''
+            .attr('tabindex', 0)
+            .classed('item', true)
+            .classed('selected', function (address, index) {
+              return index === 0
             })
-            .on('click', function (d) {
-              d3.selectAll('#list li')
-                .classed('selected', false)
-              d3.select(this)
-                .classed('selected', true)
-
-              selectAddress(d)
+            .on('click', function () {
+              selectItem(this)
             })
 
           item.append('span')
             .attr('class', 'address')
-            .html(function (d) {
-              return d.address
+            .html(function (address) {
+              return address.address
             })
 
           item.append('span')
             .attr('class', 'year')
-            .html(function (d) {
-              return d.year
+            .html(function (address) {
+              return address.year
             })
 
-          li.exit().remove()
+          list.exit().remove()
 
           if (results.length) {
             selectAddress(results[0])
@@ -128,7 +161,7 @@
         var coordinates = selectedAddress.geometry.coordinates
         var street = streets[selectedAddress.streetId]
 
-        map.panTo([coordinates[1], coordinates[0]], 19)
+        map.setView([coordinates[1], coordinates[0]], Math.max(map.getZoom(), 19))
         geojsonLayer.clearLayers()
         geojsonLayer.addData({
           type: 'FeatureCollection',
