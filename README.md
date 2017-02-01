@@ -20,14 +20,14 @@ Datasets:
 
 In this tutorial, we will do the following things:
 
-- See what data is available via [Building Inspector's API](http://buildinginspector.nypl.org/data)
-- Find out how the NYPL traces the locations and names of streets from historical maps, and turns this into new datasets for everyone to use (and how you can help tracing more maps)
-- We will use the NYC Space/Time Directory's website to download and use those datasets
-- Combine Building Inspector and historical street datasets to create a new dataset containing historical addresses
-- We'll use Leaflet to display Map Warper's historical map tiles
-- And finally, put everything together and make our new dataset searchable with a simple web interface
+1. See what data is available via [Building Inspector's API](http://buildinginspector.nypl.org/data)
+2. Find out how the NYPL traces the locations and names of streets from historical maps, and turns this into new datasets for everyone to use (and how you can help tracing more maps)
+3. We will use the NYC Space/Time Directory's website to download and use those datasets
+4. Combine Building Inspector and historical street datasets to create a new dataset containing historical addresses
+5. We'll use Leaflet to display Map Warper's historical map tiles
+6. And finally, put everything together and make our new dataset searchable with a simple web interface
 
-__Examples__ from [1854 New York City Directory](https://digitalcollections.nypl.org/collections/new-york-city-directory-for-1854-1855-thirteenth-publication#/?tab=navigation):
+__Examples__ from a [1854 New York City Directory](https://digitalcollections.nypl.org/collections/new-york-city-directory-for-1854-1855-thirteenth-publication#/?tab=navigation):
 
 - _Kelly William E. daguerreotypes, 374 Bowery_
 
@@ -131,12 +131,12 @@ For more information and examples, see https://github.com/nypl-spacetime/spaceti
 
 ## Using GeoJSON files directly
 
-If you're just interested in geospatial data, you can download GeoJSON files directly from [spacetime.nypl.org](http://spacetime.nypl.org/#data):
+If you're just interested in geospatial data, you can download GeoJSON files directly from [spacetime.nypl.org](http://spacetime.nypl.org/#data).
 
-Displaying GeoJSON files in [geojson.io](http://geojson.io/):
+These GeoJSON files can be used in any GIS tool. And you can easily display and edit them using [geojson.io](http://geojson.io/):
 
 - [New York City's churches](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Fnyc-churches%nyc-churches.geojson)
-- [a sample of 100 (of almost 40,000) photos from OldNYC](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Foldnyc%2Foldnyc.sample.geojson)
+- [A sample of 100 (of almost 40,000) photos from OldNYC](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Foldnyc%2Foldnyc.sample.geojson)
 
 ## Building Inspector
 
@@ -160,6 +160,26 @@ The historical streets dataset (`nyc-streets`) contains one type of objects:
 The tracing of streets from historic maps is done manually, in QGIS. __You can help us, see https://github.com/nypl-spacetime/qgis-trace-tutorial for details.__
 
 ![](images/qgis-nyc-streets.png)
+
+# Map Warper
+
+In this tutorial, we won't use data from Space/Time `mapwarper` dataset (which contains the polygonal outlines and metadata of thousands of NYC maps), but we will use Map Warper's tile server to display historical map tiles.
+
+Building Inspector's addresses contain the ID of the map that was used for address transcription. On the [_Export_ tab](http://maps.nypl.org/warper/maps/30780#Export_tab) in Map Warper's map view, you can see that map's [tiles URL](https://en.wikipedia.org/wiki/Tile_Map_Service):
+
+    http://maps.nypl.org/warper/maps/tile/30780/{z}/{x}/{y}.png
+
+![](images/mapwarper.png)
+
+You can use this tile URL in many geospatial tools, including [Leaflet](http://leafletjs.com/reference-1.0.3.html#tilelayer):
+
+```js
+L.tileLayer('http://maps.nypl.org/warper/maps/tile/30780/{z}/{x}/{y}.png').addTo(map)
+```
+
+We are not using Map Warper data directly, but you can still have a look at the dataset's GeoJSON file, or even open it in QGIS:
+
+![](images/qgis-mapwarper.png)
 
 ## Finding closest historical street for each Building Inspector address
 
@@ -190,16 +210,25 @@ geojson.io
 
 ## Preparing data for web interface
 
-data.js
+The Objects NDJSON file of `building-inspector-nyc-streets`, the dataset we've explained in the previous section, is more than 13MB and contains many fields (like IDs and types) we do not need in our visualization.
 
-npm install
+This tutorial contains a [small Node.js script](data.js) which downloads `building-inspector-nyc-streets` and `nyc-steets` from the Space/Time website, removes some unneeded fields out and does some data transformation to index streets by their ID. Yet another ETL step, it never ends.
 
-node data.js
+In many of Space/Time's ETL tools I'm using on [Highland](http://highlandjs.org/) for streaming data processing. Highland is great, you should use it too!
 
-7.1MB, 700KB with gzip
+To run this script, first install its dependencies:
 
+    npm install
+
+Then, run the script:
+
+    node data.js
+
+The resulting [addresses json file](data/addresses.json) has now shrunk 50% in size to 7.1MB, and around [700KB with HTTP compression](https://en.wikipedia.org/wiki/HTTP_compression).
 
 ## Web interface
+
+Now, we have all
 
 overal links naar #line
 
@@ -281,11 +310,5 @@ map.on('moveend', function () {
 })
 ```
 
-address, from map warper, contains a `mapId`
 
-maps.nypl.org/warper/maps/11982
-http://maps.nypl.org/warper/maps/11982#Export_tab
-
-http://maps.nypl.org/warper/maps/tile/11982/{z}/{x}/{y}.png
-
-
+[![](images/screenshot.png)](http://bertspaan.nl/tutorial-historical-addresses)

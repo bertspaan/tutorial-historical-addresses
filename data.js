@@ -26,7 +26,6 @@ H(request(s3Url(datasets.streets)))
     `${datasets.streets}/${object.id}`,
     {
       name: object.name,
-      year: object.validSince,
       geometry: object.geometry
     }
   ]))
