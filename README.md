@@ -224,13 +224,33 @@ Then, run the script:
 
     node data.js
 
-The resulting [addresses json file](data/addresses.json) has now shrunk 50% in size to 7.1MB, and around [700KB with HTTP compression](https://en.wikipedia.org/wiki/HTTP_compression).
+The resulting [addresses json file](data/addresses.json) has now shrunk 50% in size to 7.1MB, and around 700KB with [HTTP compression](https://en.wikipedia.org/wiki/HTTP_compression).
 
 ## Web interface
 
-Now, we have all
+Now, we have all data we need:
 
-overal links naar #line
+  - A new dataset with historical addresses (with street names), including their locations
+  - For every address, a links to the geometry of it's street
+  - A way to display historic map tiles from Map Warper
+
+With some HTML, JavaScript and CSS, it's pretty easy to make a website with which you can search those historical addresses.
+
+Some libraries we'll need:
+
+  - [__D3.js__](https://d3js.org/): D3.js is a JavaScript library for manipulating documents based on data. It makes downloading JSON data and then modifying the webpage based on this data very easy.
+  - [__Leaflet__](http://leafletjs.com/):  Leaflet is a JavaScript library for mobile-friendly interactive maps. It can display Map Warper's map tiles, as well as GeoJSON data.
+  - [__lunr.js__](http://lunrjs.com/): lunr.js is a simple full text search engine for the browser. We use lunr.js to index and search addresses.
+
+Our search tool consists of three files:
+
+  - [`index.html`](index.html)
+  - [`js/historical-addresses.js`](js/historical-addresses.js)
+  - [`css/style.css`](css/style.css)
+
+`index.html` is the page that opens when you point your browser to [bertspaan.nl/tutorial-historical-addresses](http://bertspaan.nl/tutorial-historical-addresses/).
+
+Below, I will explain the most important parts of [`js/historical-addresses.js`](js/historical-addresses.js):
 
 Initialize Leaflet map
 
