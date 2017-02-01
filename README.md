@@ -215,7 +215,7 @@ FROM objects addresses
 WHERE type = 'st:Address'
 ```
 
-See [GitHub](https://github.com/nypl-spacetime/etl-building-inspector-nyc-streets) for the ETL modules source code.
+See [GitHub](https://github.com/nypl-spacetime/etl-building-inspector-nyc-streets) for the source code of the ETL module.
 
 See [bertspaan.nl/west-village](http://bertspaan.nl/west-village) for more details about matching addresses and streets using PostGIS.
 
@@ -253,7 +253,7 @@ Example GeoJSON from resulting datasets, with links between Building Inspector a
 
 Open a [sample of 100 addresses in geojson.io](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Fbuilding-inspector-nyc-streets%2Fbuilding-inspector-nyc-streets.sample.geojson).
 
-## Preparing data for web interface
+## Preparing data for a web interface
 
 The Objects NDJSON file of `building-inspector-nyc-streets`, the dataset we've explained in the previous section, is more than 13MB and contains many fields (like IDs and types) we do not need in our visualization.
 
