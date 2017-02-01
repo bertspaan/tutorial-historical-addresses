@@ -177,17 +177,27 @@ You can use this tile URL in many geospatial tools, including [Leaflet](http://l
 L.tileLayer('http://maps.nypl.org/warper/maps/tile/30780/{z}/{x}/{y}.png').addTo(map)
 ```
 
-We are not using Map Warper data directly, but you can still have a look at the dataset's GeoJSON file, or even open it in QGIS:
+Although this tutorial does not use Map Warper data directly, you can still have a look at the dataset's GeoJSON file, or even open it in QGIS:
 
 ![](images/qgis-mapwarper.png)
 
 ## Finding closest historical street for each Building Inspector address
 
-For each address, find right street (+/- 5 years), see bertspaan.nl/west-village
-see etl-building-inspector-nyc-streets
-postgis, indexed distance
+We have, in two separate datasets, address and street data:
 
-show SQL
+- `building-inspector` dataset: house numbers with point geometries
+- `nyc-streets` dataset: street names with polyline geometries
+
+We need a way to figure out that house number __84½__ belongs to __Fulton Street__ on the same map:
+
+![](images/84½-fulton.jpg)
+
+Luckily, buildings with house numbers are usually geographically close to the street they are on, so we can compute the distance between each address and each street, and we should find pretty good matches. Or course, we also want to take the year of both the address and the street into account, to that we will not link 1854 addresses to 1894 streets.
+
+For the NYC Space/Time Directory, I have created an [ETL module](https://github.com/nypl-spacetime/etl-building-inspector-nyc-streets
+) which uses [PostGIS](http://www.postgis.net/) and data from the `building-inspector` and `nyc-streets` datasets to create links between those datasets.
+
+Example SQL query from this ETL module, using a 5 year margin for matching addresses and streets:
 
 ```sql
 SELECT addresses.id, (
@@ -205,8 +215,43 @@ FROM objects addresses
 WHERE type = 'st:Address'
 ```
 
-resultaat: de dataset op S/t, voorbeeld etc.
-geojson.io
+See [GitHub](https://github.com/nypl-spacetime/etl-building-inspector-nyc-streets) for the ETL modules source code.
+
+See [bertspaan.nl/west-village](http://bertspaan.nl/west-village) for more details about matching addresses and streets using PostGIS.
+
+The resulting dataset is called `building-inspector-nyc-streets` and can be found on the [Space/Time website](http://spacetime.nypl.org/#data-building-inspector-nyc-streets).
+
+Example GeoJSON from resulting datasets, with links between Building Inspector and `nyc-streets`:
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "id": "78675-1",
+    "name": "119 East 59th Street",
+    "type": "st:Address",
+    "validSince": 1857,
+    "validUntil": 1858,
+    "data": {
+      "mapId": 7113,
+      "number": "119",
+      "layerId": 859,
+      "sheetId": 152,
+      "addressId": "building-inspector/78675-1",
+      "streetId": "nyc-streets/859-east-59th-street"
+    }
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -73.965545,
+      40.761191
+    ]
+  }
+}
+```
+
+Open a [sample of 100 addresses in geojson.io](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Fbuilding-inspector-nyc-streets%2Fbuilding-inspector-nyc-streets.sample.geojson).
 
 ## Preparing data for web interface
 
@@ -328,7 +373,7 @@ d3.select('#search')
   })
 ```
 
-After a search finds a new address, the map moves to that address. When the map is finished moving, set the tile URL of the tile layer to the correct Map Warper tile URL:
+After searching and finding a new address, the map will move to the coordinates of that address. When the map is finished moving, set the tile URL of the tile layer to the correct Map Warper tile URL:
 
 ```js
 map.on('moveend', function () {
@@ -337,8 +382,6 @@ map.on('moveend', function () {
 })
 ```
 
-__Final result:__
-
-[bertspaan.nl/tutorial-historical-addresses](http://bertspaan.nl/tutorial-historical-addresses)
+__Final result:__ [bertspaan.nl/tutorial-historical-addresses](http://bertspaan.nl/tutorial-historical-addresses)
 
 [![](images/screenshot.png)](http://bertspaan.nl/tutorial-historical-addresses)
