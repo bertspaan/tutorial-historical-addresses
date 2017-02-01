@@ -18,19 +18,22 @@ Datasets:
 
 ## Outline
 
-In this tutorial, we will:
+In this tutorial, we will do the following things:
 
-- See what data is available via the [Building Inspector API](http://buildinginspector.nypl.org/data)
-- How the NYPL traces streets from historical maps and how this data is available in the NYC Space/Time Directory (and how you can help tracing more maps)
-- How we can combine those two datasets to create a new dataset containing historical addresses
-- using Map Warper's historical map tiles in Leaflet
-- How we can make them accessible in a simple web interface
+- See what data is available via [Building Inspector's API](http://buildinginspector.nypl.org/data)
+- Find out how the NYPL traces the locations and names of streets from historical maps, and turns this into new datasets for everyone to use (and how you can help tracing more maps)
+- We will use the NYC Space/Time Directory's website to download and use those datasets
+- Combine Building Inspector and historical street datasets to create a new dataset containing historical addresses
+- We'll use Leaflet to display Map Warper's historical map tiles
+- And finally, put everything together and make our new dataset searchable with a simple web interface
 
-Some examples:
+__Examples__ from [1854 New York City Directory](https://digitalcollections.nypl.org/collections/new-york-city-directory-for-1854-1855-thirteenth-publication#/?tab=navigation):
 
 - _Kelly William E. daguerreotypes, 374 Bowery_
 
 ![](images/city-directory-example-1.jpg)
+
+This address on 1875 map:
 
 ![](images/374-bowery.jpg)
 
@@ -38,8 +41,13 @@ Some examples:
 
 ![](images/city-directory-example-2.jpg)
 
+This address on 1855 map:
+
 ![](images/84½-fulton.jpg)
 
-Goal:
+__Goal__: web interface for searching historical addresses
 
 ![](images/screenshot.png)
+
+## Data
+
