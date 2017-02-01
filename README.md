@@ -31,23 +31,23 @@ __Examples__ from a [1854 New York City Directory](https://digitalcollections.ny
 
 - _Kelly William E. daguerreotypes, 374 Bowery_
 
-![](images/city-directory-example-1.jpg)
+![Scan of 1854 New York City Directory showing William E. Kelly's address](images/city-directory-example-1.jpg)
 
 This address on 1875 map:
 
-![](images/374-bowery.jpg)
+![Part of 1875 map showing 374 Bowery in Manhattan](images/374-bowery.jpg)
 
 - _Palmer George, painter, 90 Nassau, h. 84½ Fulton, Brooklyn_
 
-![](images/city-directory-example-2.jpg)
+![Scan of 1854 New York City Directory showing George Palmer's address](images/city-directory-example-2.jpg)
 
 This address on 1855 map:
 
-![](images/84½-fulton.jpg)
+![Part of 1855 map showing 84½ Fulton Street in Brooklyn](images/84½-fulton.jpg)
 
 __Goal__: web interface for searching historical addresses
 
-![](images/screenshot.png)
+![Screenshot of web interface described in this tutorial](images/screenshot.png)
 
 ## Data
 
@@ -59,13 +59,13 @@ Using the NYC Space/Time Directory, all this data is available __in one format, 
 
 You can find NYC Space/Time Directory datasets here: [spacetime.nypl.org#data](http://spacetime.nypl.org#data).
 
-![](images/spacetime-data.png)
+![Screenshot of data section on NYC Space/Time Directory website](images/spacetime-data.png)
 
 ## Extract, Transform, Load
 
 Data does not magically convert itself to one data model and appear on the NYC Space/Time Directory website. For the project, I have written many [extract, transform, load](https://en.wikipedia.org/wiki/Extract,_transform,_load) (ETL) modules which take data from one place, transform it, and output Space/Time data.
 
-![](images/spacetime-etl.png)
+![Diagram showing how data flows through NYC Space/Time Directory: multiple data sources ⟶ data transformation ⟶ Space/Time website](images/spacetime-etl.png)
 
 ## Using data from the command line
 
@@ -149,7 +149,7 @@ The Building Inspector dataset contains two types of objects:
 
 You can use [QGIS](http://www.qgis.org/) to display GeoJSON files:
 
-![](images/qgis-building-inspector.png)
+![Building Inspector data displayed in QGIS](images/qgis-building-inspector.png)
 
 ## Historical Streets
 
@@ -159,7 +159,7 @@ The historical streets dataset (`nyc-streets`) contains one type of objects:
 
 The tracing of streets from historic maps is done manually, in QGIS. __You can help us, see https://github.com/nypl-spacetime/qgis-trace-tutorial for details.__
 
-![](images/qgis-nyc-streets.png)
+![Street data displayed in QGIS](images/qgis-nyc-streets.png)
 
 # Map Warper
 
@@ -169,7 +169,7 @@ Building Inspector's addresses contain the ID of the map that was used for addre
 
     http://maps.nypl.org/warper/maps/tile/30780/{z}/{x}/{y}.png
 
-![](images/mapwarper.png)
+![Screenshot of Map Warper's export screen](images/mapwarper.png)
 
 You can use this tile URL in many geospatial tools, including [Leaflet](http://leafletjs.com/reference-1.0.3.html#tilelayer):
 
@@ -179,7 +179,7 @@ L.tileLayer('http://maps.nypl.org/warper/maps/tile/30780/{z}/{x}/{y}.png').addTo
 
 Although this tutorial does not use Map Warper data directly, you can still have a look at the dataset's GeoJSON file, or even open it in QGIS:
 
-![](images/qgis-mapwarper.png)
+![Map Warper data displayed in QGIS](images/qgis-mapwarper.png)
 
 ## Finding closest historical street for each Building Inspector address
 
@@ -190,7 +190,7 @@ We have, in two separate datasets, address and street data:
 
 We need a way to figure out that house number __84½__ belongs to __Fulton Street__ on the same map:
 
-![](images/84½-fulton.jpg)
+![Part of 1855 map showing 84½ Fulton Street in Brooklyn](images/84½-fulton.jpg)
 
 Luckily, buildings with house numbers are usually geographically close to the street they are on, so we can compute the distance between each address and each street, and we should find pretty good matches. Or course, we also want to take the year of both the address and the street into account, to that we will not link 1854 addresses to 1894 streets.
 
@@ -384,4 +384,4 @@ map.on('moveend', function () {
 
 __Final result:__ [bertspaan.nl/tutorial-historical-addresses](http://bertspaan.nl/tutorial-historical-addresses)
 
-[![](images/screenshot.png)](http://bertspaan.nl/tutorial-historical-addresses)
+[![Screenshot of final result](images/screenshot.png)](http://bertspaan.nl/tutorial-historical-addresses)
