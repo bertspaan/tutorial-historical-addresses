@@ -1,6 +1,6 @@
 # Tutorial: Historical Addresses & NYC Space/Time Directory
 
-THis is a tutorial made for the second meetup of [NYC Space/Time Directory](http://spacetime.nypl.org)'s [meetup series](https://www.meetup.com/historical-data-and-maps-at-nypl/): [NYC Maps, Buildings, and Addresses: Using and combining historic data](https://www.meetup.com/historical-data-and-maps-at-nypl/events/236221289/) on February 1st, 2017.
+This is a tutorial made for the second meetup of [NYC Space/Time Directory](http://spacetime.nypl.org)'s [meetup series](https://www.meetup.com/historical-data-and-maps-at-nypl/): [NYC Maps, Buildings, and Addresses: Using and combining historic data](https://www.meetup.com/historical-data-and-maps-at-nypl/events/236221289/) on February 1st, 2017.
 
 in this tutorial, we will combine two different crowdsourced datasets from the NYC Space/Time Directory to create a web interface makes historical addresses searchable and visible.
 
@@ -59,27 +59,27 @@ Using the NYC Space/Time Directory, all this data is available __in one format, 
 
 You can find NYC Space/Time Directory datasets here: [spacetime.nypl.org#data](http://spacetime.nypl.org#data).
 
-![](spacetime-data.png)
+![](images/spacetime-data.png)
 
 ## Extract, Transform, Load
 
 Data does not magically convert itself to one data model and appear on the NYC Space/Time Directory website. For the project, I have written many [extract, transform, load](https://en.wikipedia.org/wiki/Extract,_transform,_load) (ETL) modules which take data from one place, transform it, and output Space/Time data.
 
-![](spacetime-etl.png)
-
-https://github.com/nypl-spacetime?utf8=%E2%9C%93&q=etl-&type=&language=
+![](images/spacetime-etl.png)
 
 ## Using data from the command line
 
-http://ndjson.org/
+Space/Time datasets consist of one or more [Newline Delimited JSON](http://ndjson.org/) (NDJSON) files, and a JSON file with dataset metadata (title, author, license, etc.). NDJSON files contain one JSON object per line, which is convenient when using command line tools, or when doing streaming data processing.
 
-Newline Delimited JSON
-
-NDJSON
+Let's have a look at one line from `building-inspector.objects.ndjson`:
 
 ```json
 {"id":"87139-1","type":"st:Address","validSince":1857,"validUntil":1857,"name":"20","data":{"number":"20","sheetId":177,"layerId":859,"mapId":7138},"geometry":{"type":"Point","coordinates":[-73.99559810757634,40.71142649628733]}}
 ```
+
+This line contains _one address_ from Building Inspector's API, transcribed with crowdsourcing, and converted to the [Space/Time data model](https://github.com/nypl-spacetime/ontology). Please note that address only contains a house number, no street name.
+
+The same object, but on multiple lines and easier to read:
 
 ```json
 {
@@ -104,13 +104,13 @@ NDJSON
 }
 ```
 
-The examples below use the following tools:
+It's easy to process those files using your command line. The examples below use the following tools:
 
 - [jq](https://stedolan.github.io/jq/): command-line JSON processor, install with `brew install jq`
 - [ndjson-cli](https://github.com/mbostock/ndjson-cli): command-line tools for operating on newline-delimited JSON streams, install with `npm install -g ndjson-cli`
 - [spacetime-cli](https://github.com/nypl-spacetime/spacetime-cli): command-line tools for Space/Time data, install with `npm install -g nypl-spacetime/spacetime-cli`
 
-Use ndjson-filter to filter Building Inspector data by year, and save the resulting GeoJSON file to disk:
+Use ndjson-filter to filter Building Inspector data by year, convert to GeoJSON, and save the resulting file to disk:
 
 ```
 curl http://s3.amazonaws.com/spacetime-nypl-org/\
