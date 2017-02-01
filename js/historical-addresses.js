@@ -25,16 +25,11 @@ var styles = {
   }
 }
 
-d3.json('data/streets.json', function (err, json) {
+d3.json('data/streets.json', function (json) {
   streets = json
 })
 
-d3.json('data/addresses.json', function (err, json) {
-  if (err) {
-    console.error(err)
-    return
-  }
-
+d3.json('data/addresses.json', function (json) {
   addresses = json
 
   addresses.forEach(function (address) {
