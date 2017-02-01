@@ -4,6 +4,8 @@ var streets
 var newTiles = false
 var selectedAddress = {}
 
+// Create lunr.js index (http://lunrjs.com/),
+//   indexing only address field, and using id as reference
 var idx = lunr(function () {
   this.field('address')
   this.ref('id')
@@ -88,7 +90,11 @@ d3.select('#search')
       return
     }
 
-    var results = idx.search(this.value)
+    var newAddress = this.value
+
+    // Search lunr.js index, only use first 75 items
+    //   and replace results with actual addresses using ref
+    var results = idx.search(newAddress)
       .slice(0, 75)
       .map(function (result) {
         return addresses[result.ref]
