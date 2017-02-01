@@ -8,7 +8,15 @@ const datasets = {
   streets: 'nyc-streets'
 }
 
-const s3Url = (dataset) => `http://s3.amazonaws.com/spacetime-nypl-org/datasets/${dataset}/${dataset}.objects.ndjson`
+const baseUrl = 'http://s3.amazonaws.com/spacetime-nypl-org/datasets/'
+const s3Url = (dataset) => `${baseUrl}${dataset}/${dataset}.objects.ndjson`
+
+/* Download and transform streets dataset
+ *
+ * Create JSON object, with street IDs as key
+ * Only keep data we will use in web interface: name, year, geometry
+ * Use JSONStream.stringifyObject() to convert stream to JSON object
+ --------------------------------------------------------------------------- */
 
 H(request(s3Url(datasets.streets)))
   .split()
@@ -24,6 +32,14 @@ H(request(s3Url(datasets.streets)))
   ]))
   .pipe(JSONStream.stringifyObject())
   .pipe(fs.createWriteStream('./data/streets.json'))
+
+/* Download and transform addresses dataset
+ *
+ * This dataset contains Building Inspector addresses linked to streets from dataset above
+ *   (see https://github.com/nypl-spacetime/etl-building-inspector-nyc-streets for details)
+ * index is needed for lunr.js (http://lunrjs.com/)
+ * Only keep data we will use in web interface
+ --------------------------------------------------------------------------- */
 
 let index = 0
 H(request(s3Url(datasets.addresses)))
