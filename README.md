@@ -252,7 +252,11 @@ Our search tool consists of three files:
 
 Below, I will explain the most important parts of [`js/historical-addresses.js`](js/historical-addresses.js):
 
-Initialize Leaflet map
+First, initialize a Leaflet map, and add three layers:
+
+  1. An OpenStreetMap base layer
+  2. A tile layer for Map Warper tiles
+  3. A GeoJSON layer for address and street data
 
 ```js
 var map = L.map('map', {
@@ -286,7 +290,7 @@ var geojsonLayer = new L.geoJson(null, {
 }).addTo(map)
 ```
 
-
+Create a new lunr.js index, indexing only the `address` field and using `id` as a reference:
 
 ```js
 var idx = lunr(function () {
@@ -295,7 +299,7 @@ var idx = lunr(function () {
 })
 ```
 
-Use D3.js to load the two JSON files, and index all addresses with Lunr.js
+Use D3.js to load the two JSON files, store the data, and index all addresses with lunr.js:
 
 ```js
 d3.json('data/streets.json', function (json) {
@@ -311,6 +315,8 @@ d3.json('data/addresses.json', function (json) {
 })
 ```
 
+When the user types in the input field, search the lunr.js index, take only the first 75 results, and store them for display:
+
 ```js
 d3.select('#search')
   .on('input', function () {
@@ -322,6 +328,7 @@ d3.select('#search')
   })
 ```
 
+After a search finds a new address, the map moves to that address. When the map is finished moving, set the tile URL of the tile layer to the correct Map Warper tile URL:
 
 ```js
 map.on('moveend', function () {
@@ -330,5 +337,8 @@ map.on('moveend', function () {
 })
 ```
 
+__Final result:__
+
+[bertspaan.nl/tutorial-historical-addresses](http://bertspaan.nl/tutorial-historical-addresses)
 
 [![](images/screenshot.png)](http://bertspaan.nl/tutorial-historical-addresses)
