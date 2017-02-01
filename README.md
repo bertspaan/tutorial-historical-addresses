@@ -131,25 +131,35 @@ For more information and examples, see https://github.com/nypl-spacetime/spaceti
 
 ## Using GeoJSON files directly
 
-100 of almost 40,000 photos
-http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Foldnyc%2Foldnyc.sample.geojson
+If you're just interested in geospatial data, you can download GeoJSON files directly from [spacetime.nypl.org](http://spacetime.nypl.org/#data):
 
-http://s3.amazonaws.com/spacetime-nypl-org/datasets/nyc-churches/nyc-churches.geojson
+Displaying GeoJSON files in [geojson.io](http://geojson.io/):
+
+- [New York City's churches](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Fnyc-churches%nyc-churches.geojson)
+- [a sample of 100 (of almost 40,000) photos from OldNYC](http://geojson.io/#data=data:text/x-url,http%3A%2F%2Fs3.amazonaws.com%2Fspacetime-nypl-org%2Fdatasets%2Foldnyc%2Foldnyc.sample.geojson)
 
 ## Building Inspector
 
+The Building Inspector dataset contains two types of objects:
 
-BI: puntlocaties van addresses, alleen huisnummer, géén straatnaam
-straatnamen in `nyc-streets`
+- __Buildings: footprints of historical buildings__, with year, map layer, and color
+- __Addresses: transcibed house numbers__ (see Building Inspector's [_Enter Addresses_ task](http://buildinginspector.nypl.org/address)), with year, map layer and coordinates
 
-point to dataset, example in geojson.io
+(In the dataset's ZIP file you will find `building-inspector.relations.ndjson`, which contains links between buildings and addresses, but we will not use those in this tutorial.)
+
+You can use [QGIS](http://www.qgis.org/) to display GeoJSON files:
+
+![](images/qgis-building-inspector.png)
 
 ## Historical Streets
 
-nyc-streets
+The historical streets dataset (`nyc-streets`) contains one type of objects:
 
-  - manual tracing of atlases, point to tutorial
-  point to dataset, example in geojson.io
+- __Streets: centerlines of historical streets__, with their name, year and map layer
+
+The tracing of streets from historic maps is done manually, in QGIS. __You can help us, see https://github.com/nypl-spacetime/qgis-trace-tutorial for details.__
+
+![](images/qgis-nyc-streets.png)
 
 ## Finding closest historical street for each Building Inspector address
 
