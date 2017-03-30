@@ -33,7 +33,7 @@ __Examples__ from a [1854 New York City Directory](https://digitalcollections.ny
 
 ![Scan of 1854 New York City Directory showing William E. Kelly's address](images/city-directory-example-1.jpg)
 
-This address on 1875 map:
+This address on an 1875 map:
 
 ![Part of 1875 map showing 374 Bowery in Manhattan](images/374-bowery.jpg)
 
@@ -41,7 +41,7 @@ This address on 1875 map:
 
 ![Scan of 1854 New York City Directory showing George Palmer's address](images/city-directory-example-2.jpg)
 
-This address on 1855 map:
+This address on an 1855 map:
 
 ![Part of 1855 map showing 84½ Fulton Street in Brooklyn](images/84½-fulton.jpg)
 
